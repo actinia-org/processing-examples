@@ -1,0 +1,35 @@
+{
+	"id": "index_NDWI",
+	"description": "Normalised Difference Water Index (NDWI) [-1 .. +1]",
+	"template": {
+		"version": "1",
+		"list": [
+			{
+				"module": "r.mapcalc",
+				"id": "r.mapcalc_ndwi",
+				"comment": "NDWI = ( GREEN - NIR ) / ( GREEN + NIR ) (after McFeeters, 1996)",
+				"inputs": [
+					{
+						"param": "expression",
+						"value": "{{ output }} = float( {{ green }} - {{ nir }} ) / float( {{ green }} + {{ nir }} )"
+					}
+			  ]
+			},
+			{
+				"module": "r.colors",
+				"id": "r.colors_ndwi",
+				"inputs":
+				[
+					{
+						"param": "map",
+						"value": "{{ output }}"
+					},
+					{
+						"param": "color",
+						"value": "ndwi"
+					}
+				]
+			}
+		]
+	}
+}
