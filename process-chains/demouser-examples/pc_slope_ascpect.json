@@ -1,0 +1,75 @@
+{
+  "version": "1",
+  "list": [
+    {
+      "module": "g.region",
+      "id": "g.region_1",
+      "flags": "p",
+      "inputs": [
+        {
+          "param": "raster",
+          "value": "elevation@PERMANENT"
+        },
+        {
+          "param": "res",
+          "value": "10"
+        }
+      ]
+    },
+    {
+      "module": "r.slope.aspect",
+      "id": "r.slope.aspect_2",
+      "flags": "a",
+      "inputs": [
+        {
+          "param": "elevation",
+          "value": "elevation@PERMANENT"
+        },
+        {
+          "param": "format",
+          "value": "degrees"
+        },
+        {
+          "param": "precision",
+          "value": "FCELL"
+        },
+        {
+          "param": "zscale",
+          "value": "1.0"
+        },
+        {
+          "param": "min_slope",
+          "value": "0.0"
+        }
+      ],
+      "outputs": [
+        {
+          "param": "slope",
+          "value": "myslope"
+        },
+        {
+          "param": "aspect",
+          "value": "myaspect",
+          "export": {
+            "format": "GTiff",
+            "type": "raster"
+          }
+        }
+      ]
+    },
+    {
+      "module": "exporter",
+      "id": "exporter",
+      "outputs":[
+        {
+          "param": "raster",
+          "value": "myslope",
+          "export": {
+            "format": "GTiff",
+            "type": "raster"
+          }
+        }
+      ]
+    }
+  ]
+}

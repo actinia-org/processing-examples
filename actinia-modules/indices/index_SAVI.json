@@ -1,0 +1,89 @@
+{
+	"id": "index_SAVI",
+	"description": "Soil-adjusted Vegetation Index (SAVI) [-1 .. +1]",
+	"template": {
+		"version": "1",
+		"list": [
+			{
+				"module": "r.mapcalc",
+				"id": "r.mapcalc_scale_red",
+				"comment": "scale band with max between 0 and 1",
+				"inputs": [
+					{
+						"param": "expression",
+						"value": "tmp_red = if({{ red }} > {{ max }}, 1.0, float({{ red }}/({{ max }}*1.0) ) )"
+					}
+			  ]
+			},
+			{
+				"module": "r.mapcalc",
+				"id": "r.mapcalc_scale_nir",
+				"comment": "scale band with max between 0 and 1",
+				"inputs": [
+					{
+						"param": "expression",
+						"value": "tmp_nir = if({{ nir }} > {{ max }}, 1.0, float({{ nir }}/({{ max }}*1.0) ) )"
+					}
+			  ]
+			},
+			{
+				"module": "r.mapcalc",
+				"id": "r.mapcalc_savi",
+				"comment": "SAVI = ( ( NIR - RED ) / ( NIR + RED + L ) * ( 1 + L ) ); https://github.com/sentinel-hub/custom-scripts/blob/master/sentinel-2/savi/script.js; https://wiki.landscapetoolbox.org/doku.php/remote_sensing_methods:soil-adjusted_vegetation_index; L is the soil brightness correction factor: in areas with very high vegetation regions L=0 (SAVI = NDVI), with no green vegetation L=1, L=0.5 works well in most situations (default: 0.428)",
+				"inputs": [
+					{
+						"param": "expression",
+						"value": "{{ output }} = ( tmp_nir - tmp_red ) / ( tmp_nir + tmp_red + {{ L|default(0.428) }} * ( 1 + {{ L|default(0.428) }} ) )"
+					}
+			  ]
+			},
+			{
+				"module": "r.colors",
+				"id": "r.colors_savi",
+				"inputs":
+				[
+					{
+						"param": "map",
+						"value": "{{ output }}"
+					},
+					{
+						"param": "color",
+						"value": "ndvi"
+					}
+				]
+			},
+			{
+				"module": "g.remove",
+				"id": "g.remove_tmp_red",
+				"inputs":
+				[
+					{
+						"param": "type",
+						"value": "raster"
+					},
+					{
+						"param": "name",
+						"value": "tmp_red"
+					}
+				],
+				"flags": "f"
+			},
+			{
+				"module": "g.remove",
+				"id": "g.remove_tmp_nir",
+				"inputs":
+				[
+					{
+						"param": "type",
+						"value": "raster"
+					},
+					{
+						"param": "name",
+						"value": "tmp_nir"
+					}
+				],
+				"flags": "f"
+			}
+		]
+	}
+}
